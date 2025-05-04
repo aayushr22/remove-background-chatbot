@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Removal Service - Chatbot Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: #8456C9;
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .hero {
+            background-color: #8456C9;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: white;
+            color: #8456C9;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .features {
+            padding: 5rem 0;
+            background-color: white;
+        }
+        
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #8456C9;
+        }
+        
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        /* Chatbot Styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            max-height: 500px;
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-header {
+            background-color: #8456C9;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-header h3 {
+            margin: 0;
+        }
+        
+        .close-chatbot {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            max-height: 350px;
+        }
+        
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        
+        .user-message {
+            background-color: #E3F2FD;
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+        }
+        
+        .bot-message {
+            background-color: #F5F5F5;
+            margin-right: auto;
+            border-bottom-left-radius: 0;
+        }
+        
+        .chatbot-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        .chatbot-input button {
+            background-color: #8456C9;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #8456C9;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .chatbot-container {
+                width: 100%;
+                max-width: 100%;
+                height: 100%;
+                bottom: 0;
+                right: 0;
+                border-radius: 0;
+                max-height: 100%;
+            }
+            
+            .chatbot-toggle {
+                bottom: 10px;
+                right: 10px;
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">RemoveBG Clone</div>
+                <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">API</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Remove Image Background</h1>
+            <p>100% automatically – in 5 seconds – without a single click</p>
+            <a href="#" class="btn">Upload Image</a>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Fast Processing</h3>
+                    <p>Remove backgrounds from images in seconds with our AI technology.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Batch Processing</h3>
+                    <p>Process multiple images at once with our bulk processing tool.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>API Access</h3>
+                    <p>Integrate our background removal service into your application.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 RemoveBG Clone. A demonstration project.</p>
+        </div>
+    </footer>
+    
+    <!-- Chatbot Toggle Button -->
+    <div class="chatbot-toggle" id="chatbot-toggle">
+        💬
+    </div>
+    
+    <!-- Chatbot Container -->
+    <div class="chatbot-container hidden" id="chatbot-container">
+        <div class="chatbot-header">
+            <h3>Background Removal Assistant</h3>
+            <button class="close-chatbot" id="close-chatbot">✕</button>
+        </div>
+        <div class="chatbot-messages" id="chatbot-messages">
+            <div class="message bot-message">Hi there! I'm your background removal assistant. How can I help you today?</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="user-input" placeholder="Type your message here...">
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    
+    <script>
+        // Chatbot functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotContainer = document.getElementById('chatbot-container');
+            const closeButton = document.getElementById('close-chatbot');
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            
+            // Knowledge base for the chatbot
+            const knowledgeBase = {
+                greetings: ['hi', 'hello', 'hey', 'greetings'],
+                pricing: ['price', 'cost', 'pricing', 'payment', 'subscription'],
+                api: ['api', 'integration', 'integrate', 'developer'],
+                background: ['background', 'remove', 'removal', 'transparent'],
+                format: ['format', 'file', 'png', 'jpg', 'jpeg', 'supported'],
+                limitations: ['limit', 'size', 'resolution', 'large'],
+                help: ['help', 'support', 'issue', 'problem', 'not working']
+            };
+            
+            // Responses for different query types
+            const responses = {
+                greetings: "Hello! How can I assist you with our background removal service today?",
+                pricing: "We offer various pricing plans:\n- Free: 3 images/month\n- Personal: $9.99/month for 40 images\n- Business: $19.99/month for 150 images\n- Enterprise: Custom pricing for high volume needs\nWould you like more details on any specific plan?",
+                api: "Yes, we offer a robust API for integrating our background removal service into your application. Our API is RESTful and provides programmatic access to our service. Would you like to know more about our API documentation or pricing?",
+                background: "Our AI-powered technology automatically detects the subject in your image and removes the background, creating a transparent PNG. The process takes only seconds and works with people, products, animals, and more.",
+                format: "We support most common image formats including JPG, PNG, JPEG, and WebP. After processing, you can download your image as a transparent PNG or with a custom background color.",
+                limitations: "Our standard service supports images up to 10MB and 25 megapixels. For larger images, you might need to resize them before uploading or contact us for custom enterprise solutions.",
+                help: "I'm sorry you're experiencing issues. Common problems include image upload failures (check file size/format) and processing errors (try a clearer image). For specific technical support, please email support@removebg-clone.com.",
+                unknown: "I'm not sure I understand. Could you please rephrase your question? I can help with pricing, API usage, supported formats, and how our background removal works."
+            };
+            
+            // Toggle chatbot visibility
+            chatbotToggle.addEventListener('click', function() {
+                chatbotContainer.classList.remove('hidden');
+                chatbotToggle.classList.add('hidden');
+            });
+            
+            // Close chatbot
+            closeButton.addEventListener('click', function() {
+                chatbotContainer.classList.add('hidden');
+                chatbotToggle.classList.remove('hidden');
+            });
+            
+            // Send message when Send button is clicked
+            sendButton.addEventListener('click', sendMessage);
+            
+            // Send message when Enter key is pressed
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessage(message, 'user');
+                
+                // Clear input field
+                userInput.value = '';
+                
+                // Process the message and get a response
+                setTimeout(() => {
+                    const response = processMessage(message);
+                    addMessage(response, 'bot');
+                }, 500);
+            }
+            
+            function addMessage(message, sender) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.classList.add(sender + '-message');
+                messageElement.textContent = message;
+                
+                messagesContainer.appendChild(messageElement);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            function processMessage(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Check which category the message falls into
+                for (const [category, keywords] of Object.entries(knowledgeBase)) {
+                    for (const keyword of keywords) {
+                        if (lowerMessage.includes(keyword)) {
+                            return responses[category];
+                        }
+                    }
+                }
+                
+                // If no category matches, return the unknown response
+                return responses.unknown;
+            }
+        });
+    </script>
+</body>
+</html>
